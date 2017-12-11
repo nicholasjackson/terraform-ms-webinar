@@ -1,7 +1,7 @@
 resource "azurerm_public_ip" "jumpbox" {
   name                         = "jumpbox-public-ip"
   location                     = "${var.location}"
-  resource_group_name          = "${var.resource_group_name}"
+  resource_group_name          = "${azurerm_resource_group.default.name}"
   public_ip_address_allocation = "static"
   domain_name_label            = "${var.resource_group_name}-ssh"
   depends_on                   = ["module.network"]
@@ -14,7 +14,7 @@ resource "azurerm_public_ip" "jumpbox" {
 resource "azurerm_network_interface" "jumpbox" {
   name                = "jumpbox-nic"
   location            = "${var.location}"
-  resource_group_name = "${var.resource_group_name}"
+  resource_group_name = "${azurerm_resource_group.default.name}"
 
   ip_configuration {
     name                          = "IPConfiguration"
@@ -31,7 +31,7 @@ resource "azurerm_network_interface" "jumpbox" {
 resource "azurerm_virtual_machine" "jumpbox" {
   name                  = "jumpbox"
   location              = "${var.location}"
-  resource_group_name   = "${var.resource_group_name}"
+  resource_group_name   = "${azurerm_resource_group.default.name}"
   network_interface_ids = ["${azurerm_network_interface.jumpbox.id}"]
   vm_size               = "Standard_DS1_v2"
 

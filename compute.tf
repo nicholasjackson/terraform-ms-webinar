@@ -1,12 +1,12 @@
 module "network" {
   source              = "Azure/network/azurerm"
   location            = "${var.location}"
-  resource_group_name = "${var.resource_group_name}"
+  resource_group_name = "${azurerm_resource_group.default.name}"
 }
 
 module "loadbalancer" {
   source              = "Azure/loadbalancer/azurerm"
-  resource_group_name = "${var.resource_group_name}"
+  resource_group_name = "${azurerm_resource_group.default.name}"
   location            = "${var.location}"
   prefix              = "terraform-test"
 
@@ -17,7 +17,7 @@ module "loadbalancer" {
 
 module "computegroup" {
   source                                 = "Azure/computegroup/azurerm"
-  resource_group_name                    = "${var.resource_group_name}"
+  resource_group_name                    = "${azurerm_resource_group.default.name}"
   location                               = "${var.location}"
   vm_size                                = "Standard_A0"
   admin_username                         = "azureuser"
@@ -27,10 +27,11 @@ module "computegroup" {
   vm_os_simple                           = "UbuntuServer"
   vnet_subnet_id                         = "${module.network.vnet_subnets[0]}"
   load_balancer_backend_address_pool_ids = "${module.loadbalancer.azurerm_lb_backend_address_pool_id}"
-  cmd_extension                          = "sudo apt-get -y install nginx"
+
+  cmd_extension = "sudo apt-get update"
 
   lb_port = {
-    http  = ["80", "Tcp", "80"]
+    http  = ["80", "Tcp", "3000"]
     https = ["443", "Tcp", "443"]
   }
 

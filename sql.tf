@@ -1,7 +1,7 @@
 resource "azurerm_postgresql_server" "test" {
   name                = "postgresql-server-${var.resource_group_name}"
   location            = "westus"
-  resource_group_name = "${var.resource_group_name}"
+  resource_group_name = "${azurerm_resource_group.default.name}"
 
   sku {
     name     = "PGSQLB50"
